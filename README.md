@@ -16,3 +16,10 @@ endpoint which returns a list of prime numbers up to the input.
 | Option                                  | Location          | Description                                                                      | Example Value |
 |-----------------------------------------|-------------------|----------------------------------------------------------------------------------|---------------|
 | `primerangesapi.primeCalculationMethod` | `application.yml` | Sets the prime calculation method, accepted values are `BRUTE_FORCE` and `GUAVA` | `GUAVA`       |
+
+## Running the application
+
+```bash
+chmod 755 ./gradlew
+./gradlew run
+```
