@@ -19,7 +19,7 @@ public class PrimeService {
         if (value < 1) {
             throw new NonCalculableInputException("Numbers less than 2 can't be prime");
         }
-        return LongStream.range(1, value)
+        return LongStream.range(1, value).parallel()
                 .filter(getPrimeCalculationMethod())
                 .boxed()
                 .toList();
@@ -37,7 +37,7 @@ public class PrimeService {
             return false;
         }
         return LongStream
-                .range(2L, (longValue / 2) + 1)
+                .range(2L, (longValue / 2) + 1).parallel()
                 .noneMatch(i -> longValue % i == 0);
     }
 
