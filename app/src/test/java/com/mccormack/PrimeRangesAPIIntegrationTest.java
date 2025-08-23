@@ -12,6 +12,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.stream.Stream;
@@ -29,7 +31,7 @@ class PrimeRangesAPIIntegrationTest {
 
     @Test
     void get_shouldReturnValidResponse_whenCalledWithPositiveInteger() {
-        PrimeResponse response = testRestTemplate.getForEntity(PRIMES_ENDPOINT + "/10", PrimeResponse.class).getBody();
+        PrimeResponse response = testRestTemplate.getForEntity(testRestTemplate.getRootUri() + "/" + PRIMES_ENDPOINT + "/10", PrimeResponse.class).getBody();
         assertThat(response).isNotNull();
         assertThat(response.getInitial()).isEqualTo(10L);
         assertThat(response.getPrimes()).containsExactly( 2L, 3L, 5L, 7L);
@@ -37,16 +39,24 @@ class PrimeRangesAPIIntegrationTest {
 
     @ParameterizedTest
     @MethodSource("invalidPathParameterProvider")
-    void get_shouldReturnErrorResponse_whenCalledWithInvalidOrNullPathParameter(Object input, String error) {
-        ErrorResponse response = testRestTemplate.getForEntity(PRIMES_ENDPOINT + "/" + input, ErrorResponse.class).getBody();
-        assertThat(response).isNotNull();
-        assertThat(response.getErrorMessage()).isEqualTo(error);
+    void get_shouldReturnErrorResponse_whenCalledWithInvalidPathParameter(Object input, String error) {
+        ResponseEntity<ErrorResponse> response = testRestTemplate.getForEntity(testRestTemplate.getRootUri() + "/" + PRIMES_ENDPOINT + "/" + input.toString(), ErrorResponse.class);
+
+        assertThat(response).isNotNull().extracting(ResponseEntity::getStatusCode).isEqualTo(HttpStatusCode.valueOf(400));
+        assertThat(response.getBody()).isNotNull().extracting(ErrorResponse::getErrorMessage).isEqualTo(error);
+    }
+
+    @Test
+    void get_shouldReturnErrorResponse_whenCalledWithInvalidPath() {
+        ResponseEntity<ErrorResponse> response = testRestTemplate.getForEntity(testRestTemplate.getRootUri() + "/foo", ErrorResponse.class);
+        assertThat(response).isNotNull().extracting(ResponseEntity::getStatusCode).isEqualTo(HttpStatusCode.valueOf(404));
+        assertThat(response.getBody()).isNotNull().extracting(ErrorResponse::getErrorMessage).isEqualTo("No path found for request");
     }
 
     private static Stream<Arguments> invalidPathParameterProvider() {
         return Stream.<Arguments>builder()
+                .add(Arguments.of(0, "Invalid input, value must be a positive integer"))
                 .add(Arguments.of(-1L, "Invalid input, value must be a positive integer"))
-                .add(Arguments.of(null, "Invalid input, value must be a positive integer"))
                 .add(Arguments.of("foo", "Invalid input, value must be a positive integer"))
                 .build();
     }

@@ -2,6 +2,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id "io.freefair.lombok" version "8.14.2"
+    id 'jacoco'
 }
 
 repositories {
@@ -45,8 +46,23 @@ application {
     mainClass = 'com.mccormack.PrimeRangesAPI'
 }
 
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
+test {
     jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
+    useJUnitPlatform()
+    jacoco {
+        excludes = []
+    }
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ["**/com/mccormack/config/**",
+                              "**/com/mccormack/PrimeRangesAPI**",
+                              "**/com/mccormack/exception/**"])
+        })
+    }
 }

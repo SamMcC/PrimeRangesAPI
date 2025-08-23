@@ -4,6 +4,7 @@
 [versions]
 guava = "33.4.6-jre"
 junit-jupiter = "5.12.1"
+# Vulnerable version of spring boot because 4.0.0-M1 doesn't play nice with JUnit 5
 spring-boot = "3.5.4"
 assertj-core = "4.0.0-M1"
 mockito = "5.14.0"

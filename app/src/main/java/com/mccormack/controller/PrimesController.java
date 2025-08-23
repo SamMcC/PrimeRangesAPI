@@ -5,19 +5,21 @@ import com.mccormack.service.PrimeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 import static com.mccormack.config.Endpoints.PRIMES_ENDPOINT;
 
-@RestController(PRIMES_ENDPOINT)
+@RestController
 @RequiredArgsConstructor
+@RequestMapping(PRIMES_ENDPOINT)
 public class PrimesController {
-    private PrimeService primeService;
+    private final PrimeService primeService;
 
-    @GetMapping("{input}")
-    public PrimeResponse getPrimes(@PathVariable Long input) {
+    @GetMapping("/{input}")
+    public PrimeResponse getPrimes(@PathVariable("input") Long input) {
         List<Long> primes = primeService.getPrimesListUpToValue(input);
         return PrimeResponse.builder()
                 .initial(input)

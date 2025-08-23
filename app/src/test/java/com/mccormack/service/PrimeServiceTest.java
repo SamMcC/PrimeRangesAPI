@@ -39,6 +39,6 @@ public class PrimeServiceTest {
 
     @Test
     public void getPrimesListUpToValue_shouldThrowException_whenCalledWithInvalidInt() {
-        assertThatThrownBy(() -> primeService.getPrimesListUpToValue(-1)).hasMessage("Negative numbers can't be prime");
+        assertThatThrownBy(() -> primeService.getPrimesListUpToValue(-1)).hasMessage("Numbers less than 2 can't be prime");
     }
 }

@@ -2,6 +2,7 @@ package com.mccormack.service;
 
 import com.google.common.math.LongMath;
 import com.mccormack.config.PrimeConfig;
+import com.mccormack.exception.NonCalculableInputException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +13,11 @@ import java.util.stream.LongStream;
 @Service
 @RequiredArgsConstructor
 public class PrimeService {
-    private PrimeConfig primeConfig;
+    private final PrimeConfig primeConfig;
 
     public List<Long> getPrimesListUpToValue(long value) {
         if (value < 1) {
-            throw new RuntimeException("Negative numbers can't be prime");
+            throw new NonCalculableInputException("Numbers less than 2 can't be prime");
         }
         return LongStream.range(1, value)
                 .filter(getPrimeCalculationMethod())

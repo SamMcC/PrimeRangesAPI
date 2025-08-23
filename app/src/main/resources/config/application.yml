@@ -1,0 +1,8 @@
+primerangesapi:
+  primeCalculationMethod: GUAVA
+spring:
+  profiles:
+    active: "dev"
+
+server:
+  port: 8090
