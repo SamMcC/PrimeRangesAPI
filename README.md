@@ -12,4 +12,7 @@ endpoint which returns a list of prime numbers up to the input.
 | /primes/[n] | GET          | n - Any non-negative integer value | <pre>{<br>&nbsp;"Initial": 10,<br>&nbsp;"Primes": [2,3,5,7]<br>}</pre> |
 
 ## Configuration
-TODO
+
+| Option                                  | Location          | Description                                                                      | Example Value |
+|-----------------------------------------|-------------------|----------------------------------------------------------------------------------|---------------|
+| `primerangesapi.primeCalculationMethod` | `application.yml` | Sets the prime calculation method, accepted values are `BRUTE_FORCE` and `GUAVA` | `GUAVA`       |
